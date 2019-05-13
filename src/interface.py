@@ -208,7 +208,15 @@ def run():
     width, height = 400, 300
     root = tk.Tk()
     root.title("Jogo da Velha")
-    root.geometry("{}x{}+600+300".format(width, height))
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    
+    root.geometry("{}x{}+{}+{}".format(
+        width, height,
+        int((screen_width-width)/2),
+        int((screen_height-height)/2)
+        )
+    )
     
     optionsFrame = tk.Frame(root)
     optionsFrame.grid(row=0,column=0)
