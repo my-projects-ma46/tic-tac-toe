@@ -77,7 +77,7 @@ class Bttn:
                     numline = ''
                     if(game.winnerLine[0] != ' '):
                         numline = str(int(game.winnerLine[0])+1)
-                    for b in game.buttons.buttons:
+                    for b in game.buttons:
                         b.bttn.config(state=tk.DISABLED)
                     # color the line where player won
                     #game.markLine()
@@ -87,20 +87,6 @@ class Bttn:
             else:
                 game.switchTurn()
 
-class GridButtons:
-    def __init__(self, game):
-        
-        self.buttons = []
-
-        for i in range(3):
-            for j in range(3):
-                self.buttons.append(
-                    Bttn(i, j, game)
-                )
-
-    def getButtonState(self, i, j):
-        return self.buttons[i*3+j].buttonState
-    
 class Game:
     def __init__(self, root, turnOf=None, state=None):
         
@@ -118,11 +104,16 @@ class Game:
         self.gridFrame = tk.Frame(root)
         self.outputText = tk.StringVar()
         self.output = tk.Label(root, textvariable=self.outputText)
-        self.buttons = GridButtons(self)
+        
+        self.buttons = []
 
         self.output.grid(row=1,column=1)
         self.gridFrame.grid(row=2,column=1,sticky=tk.W+tk.E+tk.N+tk.S)
         self.updateTurnOfTxt()
+
+        for i in range(3):
+            for j in range(3):
+                self.buttons.append(Bttn(i, j, self))
 
     def updateTurnOfTxt(self):
         self.outputText.set("Vez de {}".format(image[self.turnOf]))
@@ -134,6 +125,9 @@ class Game:
             self.turnOf = CROSS
         self.updateTurnOfTxt()
     
+    def getButtonState(self, i, j):
+        return self.buttons[i*3+j].buttonState
+    
     '''def markLine(self):
         lineToMark = int(self.winnerLine[0])
         direction = self.winnerLine[1]
@@ -141,7 +135,7 @@ class Game:
         if(direction == 'r'):
             for i in range(3):
                 self.buttons.buttons.
-                if(tempWinner != self.buttons.getButtonState(i, lineToMark)):
+                if(tempWinner != self.getButtonState(i, lineToMark)):
                     finished = False
                     break'''
 
@@ -151,9 +145,9 @@ class Game:
         # checking rows
         for i in range(3):
             finished = True
-            tempWinner = self.buttons.getButtonState(i, 0)
+            tempWinner = self.getButtonState(i, 0)
             for j in range(3):
-                if(tempWinner != self.buttons.getButtonState(i, j)):
+                if(tempWinner != self.getButtonState(i, j)):
                     finished = False
                     break
             if(finished and ((tempWinner == CROSS) or (tempWinner == CIRCLE))):
@@ -164,9 +158,9 @@ class Game:
         #checking columns
         for j in range(3):
             finished = True
-            tempWinner = self.buttons.getButtonState(0, j)
+            tempWinner = self.getButtonState(0, j)
             for i in range(3):
-                if(tempWinner != self.buttons.getButtonState(i, j)):
+                if(tempWinner != self.getButtonState(i, j)):
                     finished = False
                     break
             if(finished and ((tempWinner == CROSS) or (tempWinner == CIRCLE))):
@@ -176,9 +170,9 @@ class Game:
         
         #checking ascending diagonal
         finished = True
-        tempWinner = self.buttons.getButtonState(2, 0)
+        tempWinner = self.getButtonState(2, 0)
         for i in range(3):
-                if(tempWinner != self.buttons.getButtonState(2-i, i)):
+                if(tempWinner != self.getButtonState(2-i, i)):
                     finished = False
                     break
         if(finished and ((tempWinner == CROSS) or (tempWinner == CIRCLE))):
@@ -188,9 +182,9 @@ class Game:
 
         #checking descending diagonal
         finished = True
-        tempWinner = self.buttons.getButtonState(0, 0)
+        tempWinner = self.getButtonState(0, 0)
         for i in range(3):
-                if(tempWinner != self.buttons.getButtonState(i, i)):
+                if(tempWinner != self.getButtonState(i, i)):
                     finished = False
                     break
         if(finished and ((tempWinner == CROSS) or (tempWinner == CIRCLE))):
