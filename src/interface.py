@@ -79,6 +79,8 @@ class Bttn:
                         numline = str(int(game.winnerLine[0])+1)
                     for b in game.buttons.buttons:
                         b.bttn.config(state=tk.DISABLED)
+                    # color the line where player won
+                    #game.markLine()
                     game.outputText.set("jogador {} ganhou na {} {}".format(
                         image[game.winner], line[game.winnerLine[1]], numline)
                     )
@@ -101,10 +103,8 @@ class GridButtons:
     
 class Game:
     def __init__(self, root, turnOf=None, state=None):
-        if state is None:
-            self.currentGridState = GridState(turnOf)
-        else:
-            self.currentGridState = GridState(turnOf, state)
+        
+        self.currentGridState = GridState(turnOf, state)
         
         if turnOf is None:
             self.turnOf = startingTurnOf
@@ -134,9 +134,19 @@ class Game:
             self.turnOf = CROSS
         self.updateTurnOfTxt()
     
+    '''def markLine(self):
+        lineToMark = int(self.winnerLine[0])
+        direction = self.winnerLine[1]
+
+        if(direction == 'r'):
+            for i in range(3):
+                self.buttons.buttons.
+                if(tempWinner != self.buttons.getButtonState(i, lineToMark)):
+                    finished = False
+                    break'''
+
     def isFinished(self):
         tempWinner = BLANK
-
 
         # checking rows
         for i in range(3):
@@ -173,7 +183,7 @@ class Game:
                     break
         if(finished and ((tempWinner == CROSS) or (tempWinner == CIRCLE))):
             self.winner = tempWinner
-            self.winnerLine = " a"
+            self.winnerLine = "0a"
             return True
 
         #checking descending diagonal
@@ -185,7 +195,7 @@ class Game:
                     break
         if(finished and ((tempWinner == CROSS) or (tempWinner == CIRCLE))):
             self.winner = tempWinner
-            self.winnerLine = " d"
+            self.winnerLine = "0d"
             return True
 
         # checking if no one won
