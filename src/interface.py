@@ -51,13 +51,10 @@ class Bttn:
         self.i = i
         self.j = j
         
-        self.bttnImageTxt = tk.StringVar()
-        
         self.buttonState = game.currentGridState.getRowCol(i, j)
         
-        self.bttn = tk.Button(game.gridFrame, textvariable=self.bttnImageTxt,
-         font=("Helvetica",30), fg='black', height = BTTN_SIZE, width = BTTN_SIZE, command=lambda: self.markButton(game))
-        
+        self.bttn = tk.Button(game.gridFrame, height = BTTN_SIZE, width = BTTN_SIZE,
+          font=("Helvetica",30), command=lambda: self.markButton(game))
         self.bttn.grid(row=self.i,column=self.j)
     
     def markButton(self, game):
@@ -66,8 +63,8 @@ class Bttn:
             self.buttonState = game.turnOf
             game.markedCells += 1
             self.bttn.config(state=tk.DISABLED)
+            self.bttn.config(text=image[self.buttonState])
             game.currentGridState.setRowCol(self.i, self.j, self.buttonState)
-            self.bttnImageTxt.set(image[self.buttonState])
             #=== check if someone won
             if(game.isFinished()):
                 if(game.winnerLine[1] == 'n'):
@@ -80,7 +77,7 @@ class Bttn:
                     for b in game.buttons:
                         b.bttn.config(state=tk.DISABLED)
                     # color the line where player won
-                    #game.markLine()
+                    game.markWinnerLine()
                     game.outputText.set("jogador {} ganhou na {} {}".format(
                         image[game.winner], line[game.winnerLine[1]], numline)
                     )
@@ -125,19 +122,31 @@ class Game:
             self.turnOf = CROSS
         self.updateTurnOfTxt()
     
+    def getButton(self, i, j):
+        return self.buttons[i*3+j]
+
     def getButtonState(self, i, j):
-        return self.buttons[i*3+j].buttonState
+        return self.getButton(i, j).buttonState
     
-    '''def markLine(self):
+    def markWinnerLine(self):
         lineToMark = int(self.winnerLine[0])
         direction = self.winnerLine[1]
+        backGrounBttn = 'lightgreen'
 
         if(direction == 'r'):
             for i in range(3):
-                self.buttons.buttons.
-                if(tempWinner != self.getButtonState(i, lineToMark)):
-                    finished = False
-                    break'''
+                self.getButton(lineToMark, i).bttn.config(bg=backGrounBttn)
+        elif(direction == 'c'):
+            for j in range(3):
+                self.getButton(j, lineToMark).bttn.config(bg=backGrounBttn)
+        elif(direction == 'a'):
+            for i in range(3):
+                self.getButton(2-i, i).bttn.config(bg=backGrounBttn)
+        elif(direction == 'd'):
+            for i in range(3):
+                self.getButton(i, i).bttn.config(bg=backGrounBttn)
+        else:
+            print("Error trying to set button background")
 
     def isFinished(self):
         tempWinner = BLANK
