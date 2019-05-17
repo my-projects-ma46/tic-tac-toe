@@ -1,5 +1,7 @@
 import tkinter as tk
 import os
+import threading
+import time
 
 BLANK = 0
 CROSS = 1
@@ -25,9 +27,6 @@ line = {
 }
 
 startingTurnOf = CROSS
-
-def updateGridFrame():
-    pass
 
 class GridState:
     def __init__(self, turnOf, state=None):
@@ -111,6 +110,8 @@ class Game:
         for i in range(3):
             for j in range(3):
                 self.buttons.append(Bttn(i, j, self))
+        
+        self.buttonPressed = threading.Event()
 
     def updateTurnOfTxt(self):
         self.outputText.set("Vez de {}".format(image[self.turnOf]))
@@ -121,6 +122,7 @@ class Game:
         else:
             self.turnOf = CROSS
         self.updateTurnOfTxt()
+        self.buttonPressed.set()
     
     def getButton(self, i, j):
         return self.buttons[i*3+j]
